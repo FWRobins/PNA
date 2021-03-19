@@ -15,7 +15,7 @@ name = pyautogui.prompt(text='Foldername Name?', title='Transfers', default='')
 name=name.replace("/", "")
 
 
-file = pd.read_excel(rf"C:\Users\User\Desktop\{filename}.xlsx")
+file = pd.read_excel(rf"C:\Users\User\Desktop\{filename}.xlsx", converters={'Branch':str})
 
 ##create list of relevant branches
 branches = []
@@ -79,41 +79,50 @@ for branch in branches:
 
 ##Here I get the stock codes from the new sheet and save it to
 ##txt file as string that IQ Retail SQL will accpet
-    data = pd.read_excel("C:\\Users\\User\\Desktop\\Python IQ\\TRANSFERCHECK\\"+name+"\\"+branchStr+".xlsx")
+    data = pd.read_excel("C:\\Users\\User\\Desktop\\Python IQ\\TRANSFERCHECK\\"+name+"\\"+branchStr+".xlsx", converters={'Branch':str, 'Code':str})
 
     IQ_String = ""
 
     for code, br in zip(data['Code'], data['Branch']):
         code = str(code)
-        print(code, br)
-        if branch == 'BTS':
+        print(code, br, branch)
+        if branch == br:
             print(code, br)
             if "'" in code:
                 code = code.replace("'", "''")
             IQ_String += "'"+code+"', "
-            continue
-        elif str(branch)[-1] == '0':
-            print('010')
-            if int(br) == 10:
-                print(code, br)
-                if "'" in code:
-                    code = code.replace("'", "''")
-                IQ_String += "'"+code+"', "
-        elif str(branch)[-1] == '8':
-            if int(br) == int(branch):
-                print(code, br)
-                if "'" in code:
-                    code = code.replace("'", "''")
-                IQ_String += "'"+code+"', "
-        else:
-            if int(br) == int(str(branch)[-1]):
-                print(code, br)
-                if "'" in code:
-                    code = code.replace("'", "''")
-                IQ_String += "'"+code+"', "
+
+    # for code, br in zip(data['Code'], data['Branch']):
+    #     code = str(code)
+    #     print(code, br)
+    #     if branch == 'BTS':
+    #         print(code, br)
+    #         if "'" in code:
+    #             code = code.replace("'", "''")
+    #         IQ_String += "'"+code+"', "
+    #         continue
+    #     elif str(branch)[-1] == '0':
+    #         print('010')
+    #         if int(br) == 10:
+    #             print(code, br)
+    #             if "'" in code:
+    #                 code = code.replace("'", "''")
+    #             IQ_String += "'"+code+"', "
+    #     elif str(branch)[-1] == '8':
+    #         if int(br) == int(branch):
+    #             print(code, br)
+    #             if "'" in code:
+    #                 code = code.replace("'", "''")
+    #             IQ_String += "'"+code+"', "
+    #     else:
+    #         if int(br) == int(str(branch)[-1]):
+    #             print(code, br)
+    #             if "'" in code:
+    #                 code = code.replace("'", "''")
+    #             IQ_String += "'"+code+"', "
+
+    
     print(IQ_String[:-2])
     newfile = open("C:\\Users\\User\\Desktop\\Python IQ\\TRANSFERCHECK\\"+name+"\\"+branchStr+".txt", "a")
     newfile.write(IQ_String[:-2])
     newfile.close()
-
-        
